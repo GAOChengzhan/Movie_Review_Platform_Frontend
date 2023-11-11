@@ -1,35 +1,60 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVideoSlash } from "@fortawesome/free-solid-svg-icons";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container"
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import {NavLink} from "react-router-dom";
+import './Hero.css';
+import Carousel from 'react-material-ui-carousel';
+import { Paper } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlay } from '@fortawesome/free-solid-svg-icons';
+import {Link, useNavigate} from "react-router-dom";
+import Button from 'react-bootstrap/Button';
 
-const Header = () => {
- 
-return (
-    <Navbar bg="dark" variant="dark" expand="lg">
-        <Container fluid>
-            <Navbar.Brand href="/" style={{"color":'gold'}}>
-                <FontAwesomeIcon icon ={faVideoSlash}/>Gold
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="navbarScroll" />
-            <Navbar.Collapse id="navbarScroll">
-                    <Nav
-                        className="me-auto my-2 my-lg-0"
-                        style={{maxHeight: '100px'}}
-                        navbarScroll
-                    >
-                    <NavLink className ="nav-link" to="/">Home</NavLink>
-                    <NavLink className ="nav-link" to="/watchList">Watch List</NavLink>      
-                </Nav>
-                <Button variant="outline-info" className="me-2">Login</Button>
-                <Button variant="outline-info">Register</Button>
-            </Navbar.Collapse>
-        </Container>
-    </Navbar>
+
+const Hero = ({movies}) => {
+
+    const navigate = useNavigate();
+
+    function reviews(movieId)
+    {
+        navigate(`/Reviews/${movieId}`);
+    }
+
+  return (
+    <div className ='movie-carousel-container'>
+      <Carousel>
+        {
+            movies?.map((movie) =>{
+                return(
+                    <Paper key={movie.imdbId}>
+                        <div className = 'movie-card-container'>
+                            <div className="movie-card" style={{"--img": `url(${movie.backdrops[0]})`}}>
+                                <div className="movie-detail">
+                                    <div className="movie-poster">
+                                        <img src={movie.poster} alt="" />
+                                    </div>
+                                    <div className="movie-title">
+                                        <h4>{movie.title}</h4>
+                                    </div>
+                                    <div className="movie-buttons-container">
+                                        <Link to={`/Trailer/${movie.trailerLink.substring(movie.trailerLink.length - 11)}`}>
+                                            <div className="play-button-icon-container">
+                                                <FontAwesomeIcon className="play-button-icon"
+                                                    icon = {faCirclePlay}
+                                                />
+                                            </div>
+                                        </Link>
+
+                                        <div className="movie-review-button-container">
+                                            <Button variant ="info" onClick={() => reviews(movie.imdbId)} >Reviews</Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Paper>
+                )
+            })
+        }
+      </Carousel>
+    </div>
   )
 }
 
-export default Header
+export default Hero
